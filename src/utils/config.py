@@ -14,13 +14,20 @@ RECEIPTS_DIR_PATH.mkdir(parents=True, exist_ok=True)
 LOGOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Base de Datos ---
-DATABASE_URL = "sqlite:///data/epsacol.db"
-#_env_db = os.getenv("DATABASE_URL", "")
-#if _env_db and _env_db.strip():
-    #DATABASE_URL = _env_db.strip()
-#else:
-    #DATABASE_URL = f"sqlite:///{DATA_DIR.as_posix()}/epsacol.db"
-
+_env_db = os.getenv("DATABASE_URL", "")
+if _env_db and _env_db.strip().startswith("postgresql"):
+    # PRODUCCIÓN: PostgreSQL
+    DATABASE_URL = _env_db.strip()
+    IS_PRODUCTION = True
+elif _env_db and _env_db.strip().startswith("sqlite"):
+    # DESARROLLO/DEMO: SQLite
+    DATABASE_URL = _env_db.strip()
+    IS_PRODUCTION = False
+else:
+    # Fallback a SQLite local
+    DATABASE_URL = f"sqlite:///{DATA_DIR.as_posix()}/epsacol.db"
+    IS_PRODUCTION = False
+    
 # --- Seguridad (JWT / Login) ---
 SECRET_KEY = os.getenv("SECRET_KEY", "epsacol-clave-secreta-por-defecto-2026")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
