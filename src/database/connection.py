@@ -1,10 +1,11 @@
 from sqlmodel import create_engine, Session, SQLModel
 from contextlib import contextmanager
-
-# Importamos la URL ya construida (absoluta si es SQLite)
 from src.utils.config import DATABASE_URL
 
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+if DATABASE_URL.startswith("postgresql"):
+    connect_args = {}
+else:
+    connect_args = {"check_same_thread": False}
 engine = create_engine(DATABASE_URL, echo=False, connect_args=connect_args)
 
 def init_db():
