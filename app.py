@@ -1,8 +1,10 @@
 import streamlit as st
+import os
 from dotenv import load_dotenv
-
-# Cargar .env una sola vez al inicio
 load_dotenv()
+os.makedirs("data", exist_ok=True)
+os.makedirs("data/logos", exist_ok=True)
+os.makedirs("recibos", exist_ok=True)
 
 from src.database.connection import init_db, get_session
 from src.database.crud import get_all_epsas, create_epsa
