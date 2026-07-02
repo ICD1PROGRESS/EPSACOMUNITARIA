@@ -14,13 +14,12 @@ RECEIPTS_DIR_PATH.mkdir(parents=True, exist_ok=True)
 LOGOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Base de Datos ---
-# Lee del .env. Si no existe o está vacía, usa SQLite local con barras normales.
-_env_db = os.getenv("DATABASE_URL", "")
-if _env_db and _env_db.strip():
-    DATABASE_URL = _env_db.strip()
-else:
-    # .as_posix() fuerza barras / incluso en Windows
-    DATABASE_URL = f"sqlite:///{DATA_DIR.as_posix()}/epsacol.db"
+DATABASE_URL = "sqlite:///data/epsacol.db"
+#_env_db = os.getenv("DATABASE_URL", "")
+#if _env_db and _env_db.strip():
+    #DATABASE_URL = _env_db.strip()
+#else:
+    #DATABASE_URL = f"sqlite:///{DATA_DIR.as_posix()}/epsacol.db"
 
 # --- Seguridad (JWT / Login) ---
 SECRET_KEY = os.getenv("SECRET_KEY", "epsacol-clave-secreta-por-defecto-2026")
