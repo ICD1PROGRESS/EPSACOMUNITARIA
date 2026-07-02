@@ -1,6 +1,5 @@
-# src/utils/config.py
-import streamlit as st
 import os
+import streamlit as st
 from pathlib import Path
 
 # --- Rutas base del proyecto ---
@@ -15,10 +14,13 @@ RECEIPTS_DIR_PATH.mkdir(parents=True, exist_ok=True)
 LOGOS_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Base de Datos ---
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    f"sqlite:///{DATA_DIR}/epsacol.db"
-)
+# Lee del .env. Si no existe o está vacía, usa SQLite local con barras normales.
+_env_db = os.getenv("DATABASE_URL", "")
+if _env_db and _env_db.strip():
+    DATABASE_URL = _env_db.strip()
+else:
+    # .as_posix() fuerza barras / incluso en Windows
+    DATABASE_URL = f"sqlite:///{DATA_DIR.as_posix()}/epsacol.db"
 
 # --- Seguridad (JWT / Login) ---
 SECRET_KEY = os.getenv("SECRET_KEY", "epsacol-clave-secreta-por-defecto-2026")
@@ -47,3 +49,12 @@ def get_current_epsa_id():
 def get_current_epsa_nombre():
     """Retorna el nombre de la EPSA actual (si se guardó en sesión)."""
     return st.session_state.get("epsa_nombre")
+
+# --- Validación de seguridad (opcional) ---
+if SECRET_KEY == "epsacol-clave-secreta-por-defecto-2026" and not DEBUG:
+    import warnings
+    warnings.warn(
+        "⚠️  Estás usando SECRET_KEY por defecto. "
+        "Cambia la variable SECRET_KEY en tu archivo .env para producción.",
+        RuntimeWarning
+    )
